@@ -29,9 +29,17 @@
 
   const previousCombatTurn=combatTurn;
   combatTurn=function(type){
-    if(type==='potion' && s.hp>=maxHp()){
-      toast('生命已滿');
-      return;
+    if(type==='potion'){
+      if(s.hp>=maxHp()){
+        toast('生命已滿');
+        return;
+      }
+      // Base combat code searches potion IDs case-sensitively. Normalize vendor potion IDs
+      // (e.g. shopPotion) so purchased healing potions also work in combat and old saves migrate safely.
+      const potion=s.inventory.find(x=>x.type==='consumable'&&String(x.id).toLowerCase().includes('potion')&&x.qty>0);
+      if(potion && !String(potion.id).includes('potion')){
+        potion.id=String(potion.id).replace(/potion/ig,'potion');
+      }
     }
     previousCombatTurn(type);
   };
