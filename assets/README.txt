@@ -1,0 +1,1 @@
+Asset directory for Ashen Realms. Images are generated project artwork used by the static web game.
