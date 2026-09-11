@@ -124,6 +124,9 @@
     if(s.combat?.id==='brineHound'&&type==='flee'){
       if(Math.random()<.45){log('你成功退回排水洞入口。');s.combat=null;s.scene='drainEntrance';save();showScene();return}
       log('狹窄水道讓你無法脫身。');
+      const taken=dmg(s.combat.pow,def());s.hp=Math.max(0,s.hp-taken);log(`${s.combat.name} 對你造成 ${taken} 傷害。`);
+      if(s.hp<=0){s.hp=Math.ceil(maxHp()*.55);s.gold=Math.max(0,s.gold-8);s.combat=null;s.scene='arrival';s.location='灰港';log('你在城衛哨站醒來，失去了一些金幣。');toast('你被擊倒了');save();showScene();return}
+      save();renderCombat();return;
     }
     combatTurnV02(type);
   };
