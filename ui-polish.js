@@ -41,7 +41,7 @@
       gravebound:'獸裔文化多把氣味、呼吸與心跳視為靈魂仍在世的證明；墓誓會抹去這些象徵，因此被視為自我放逐。'
     },
     undead:{
-      paladin:'聖火拒絕已死之軀；你可以保有信仰，卻無法完成傳統聖騎士的授火儀式。',
+      paladin:'你仍可以信仰聖火，但傳統授火儀式需要生者的生命、靈魂與肉體形成完整共鳴；亡者之軀無法完成這套騎士誓儀。',
       spellblade:'高等精靈的奧刃結界會把亡者視為被污染的靈魂容器，在第一重共鳴時就排斥你。',
       runeguard:'矮人的氏族符文以祖血與爐火啟動；亡者之軀無法通過「活血認印」。',
       spiritcaller:'獸人祖靈不接受已脫離生命循環者作為祖祠媒介；你的呼喚只會換來沉默。'
@@ -68,6 +68,11 @@
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape' && !document.querySelector('#modal')?.classList.contains('hidden')) closeModal();
   });
+
+  // Keep the in-game version label consistent with the page header.
+  window.showMenu=function(){
+    openModal(`<h2>系統</h2><p>版本 <b>v0.3.1</b></p><p class="muted">灰港樞紐與介面更新：新增鐵匠與藥師商店、聲望、支線「低潮時的哭聲」、新敵人與三種帳冊處理結果；修正經驗條與消耗品使用，並加入所有彈出介面的關閉按鈕與種族專屬職業限制敘述。</p><div class="choices"><button onclick="save();toast('已儲存')">立即儲存</button><button class="danger" onclick="resetGame()">刪除存檔並重新開始</button></div>`);
+  };
 
   const style=document.createElement('style');
   style.textContent=`
