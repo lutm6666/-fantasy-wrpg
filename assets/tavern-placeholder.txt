@@ -1,0 +1,1 @@
+The generated Broken Anchor Tavern artwork is prepared locally and will be replaced by the binary image asset in the next asset-sync pass.
