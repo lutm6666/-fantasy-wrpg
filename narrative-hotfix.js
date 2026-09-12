@@ -79,4 +79,15 @@
       save();
     }
   };
+
+  // This file loads after narrative-flow.js. Re-apply its corrected scene/combat
+  // presentation immediately for restored saves, otherwise the page can keep the
+  // pre-hotfix render until the player clicks another action.
+  let restoredStateChanged=false;
+  if(s.combat?.id==='acolyte'&&!s.flags?.riftNameKnown&&s.combat.name!=='灰面侍從'){
+    s.combat.name='灰面侍從';
+    restoredStateChanged=true;
+  }
+  if(restoredStateChanged)save();
+  if(s.created)showScene();
 })();
