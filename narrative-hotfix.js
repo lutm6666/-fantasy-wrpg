@@ -54,7 +54,20 @@
 
   const priorAct=act;
   act=function(a){
+    const hadMissingQuest=!!s.quests?.missing;
+    const goldBefore=Number(s.gold)||0;
     priorAct(a);
+
+    // A failed negotiation with Mira means she refuses to raise the advance,
+    // not that the normal 10-gold investigation advance disappears entirely.
+    // narrative-flow handles this action itself, so repair the base reward here
+    // after the resolved outcome is known.
+    if(a==='bargain'&&!hadMissingQuest&&s.quests?.missing&&(Number(s.gold)||0)===goldBefore){
+      s.gold+=10;
+      change('金幣',10);
+      log('米菈拒絕加價，但仍支付了標準的 10 金幣調查訂金。');
+      save();
+    }
 
     if(['openCellar','pickCellar','dwarfCellar'].includes(a) && s.quests?.missing && !s.flags?.bossDefeated){
       s.quests.missing.desc='深入鐘塔地窖，尋找失蹤者，並查清眼形符號背後的人在做什麼。';
