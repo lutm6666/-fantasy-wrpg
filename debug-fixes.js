@@ -11,6 +11,31 @@
     save();
   }
 
+  // Safari can reject localStorage writes (for example in restricted/private
+  // browsing contexts or when storage quota is unavailable). A thrown setItem
+  // previously aborted the current action after the state had already changed,
+  // leaving buttons/scenes apparently frozen. Keep the session playable in
+  // memory and continue rendering even when persistence is unavailable.
+  save=function(){
+    try{
+      localStorage.setItem('ashen-realms-save',JSON.stringify(s));
+      window.__ashenStorageUnavailable=false;
+    }catch(_e){
+      window.__ashenStorageUnavailable=true;
+    }
+    renderHud();
+  };
+
+  const previousResetGame=resetGame;
+  resetGame=function(){
+    if(!window.__ashenStorageUnavailable){previousResetGame();return}
+    if(confirm('確定要刪除存檔嗎？')){
+      try{localStorage.removeItem('ashen-realms-save')}catch(_e){}
+      s=clone(baseState);
+      location.reload();
+    }
+  };
+
   // Avoid 404s for scene art that has not been added yet.
   ASSET.tavern='assets/scene-placeholder.svg';
   ASSET.tower='assets/scene-placeholder.svg';
