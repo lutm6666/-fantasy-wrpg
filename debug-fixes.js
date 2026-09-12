@@ -1,5 +1,16 @@
 // Ashen Realms runtime bug fixes that do not change story/design direction.
 (function(){
+  // Legacy saves only validated whether the race/class IDs still existed. They did
+  // not validate whether that class is legal for the saved race, so older or
+  // malformed saves could bypass the current race/class restrictions entirely.
+  if(s.created && races[s.raceId] && classes[s.classId] && !races[s.raceId].allow.includes(s.classId)){
+    const oldClass=classes[s.classId].name;
+    s.classId='warrior';
+    normalizeHp();
+    log(`舊存檔職業「${oldClass}」不符合目前的${race().name}職業限制，已改為戰士。`);
+    save();
+  }
+
   // Avoid 404s for scene art that has not been added yet.
   ASSET.tavern='assets/scene-placeholder.svg';
   ASSET.tower='assets/scene-placeholder.svg';
