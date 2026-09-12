@@ -1,5 +1,17 @@
 // Ashen Realms runtime bug fixes that do not change story/design direction.
 (function(){
+  // If preflight could read a v3+ save but Safari rejected the temporary write,
+  // game.js' legacy migrator will have cleared combat in memory. Restore the
+  // validated encounter from preflight so a reload does not silently abandon it.
+  if(!s.combat && window.__ashenPreflightCombat && window.__ashenPreflightDowngradeWritten===false){
+    const restored=window.__ashenPreflightCombat;
+    if(['rats','acolyte','warden','brineHound'].includes(restored.id)){
+      s.combat=restored;
+    }
+  }
+  delete window.__ashenPreflightCombat;
+  delete window.__ashenPreflightDowngradeWritten;
+
   // Legacy saves only validated whether the race/class IDs still existed. They did
   // not validate whether that class is legal for the saved race, so older or
   // malformed saves could bypass the current race/class restrictions entirely.
