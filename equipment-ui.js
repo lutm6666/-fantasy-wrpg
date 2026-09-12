@@ -99,11 +99,10 @@
       btn.onclick=showEquipment;
       heading.insertAdjacentElement('afterend',btn);
     }
-    // Mark currently equipped items directly in the inventory list.
     if(sheet){
       const equippedIds=new Set(Object.values(s.equipment||{}).filter(Boolean));
-      const items=[...sheet.querySelectorAll('.item')];
-      items.forEach((node,idx)=>{
+      const itemNodes=[...sheet.querySelectorAll('.item')];
+      itemNodes.forEach((node,idx)=>{
         const inv=s.inventory[idx];
         if(inv && equippedIds.has(inv.id)){
           const badge=document.createElement('span');
@@ -117,9 +116,10 @@
 
   const style=document.createElement('style');
   style.textContent=`
+    .bottom-inner{grid-template-columns:repeat(6,minmax(0,1fr))}.bottom button{font-size:11px;padding-left:2px;padding-right:2px}
     .equipment-title{align-items:flex-start;gap:12px}.equipment-title h2{margin-bottom:2px}.equipment-bag-link{padding:8px 12px;white-space:nowrap}.equipment-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.equipment-summary>div{background:#10151e;border:1px solid #364056;border-radius:12px;padding:10px;text-align:center}.equipment-summary span{display:block;color:#9ea9ba;font-size:12px}.equipment-summary b{font-size:19px;color:#f3d59c}.equip-slots{display:grid;grid-template-columns:1fr;gap:9px}.equip-slot{border:1px solid #3d485e;border-radius:14px;padding:12px;background:#141a24}.equip-slot.empty{border-style:dashed;opacity:.82}.equip-slot-head{display:flex;gap:10px;align-items:center}.equip-icon{width:38px;height:38px;border-radius:10px;background:#222b3a;border:1px solid #46536d;display:grid;place-items:center;font-size:20px}.equip-slot-label{font-size:11px;color:#9ea9ba;text-transform:uppercase}.equip-stats{font-size:13px;color:#e4c98f;margin-top:8px}.equip-desc{font-size:12px;margin-top:4px}.equip-remove{margin-top:9px;padding:7px 10px;font-size:12px}.equip-group{margin-top:18px}.equip-group h3{font-size:17px}.equip-candidate{border:1px solid #343d51;border-radius:12px;background:#151a23;padding:11px;margin-top:8px}.equip-candidate.active{border-color:#8b7043;background:#1d1b18}.equip-active-tag{margin-left:7px;color:#e9cb91}.equip-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px;font-size:12px}.equip-compare span{padding:5px 6px;border-radius:8px;text-align:center;background:#10151d}.equip-up{color:#82d69e}.equip-down{color:#e58b8b}.equip-same{color:#9ea9ba}.equip-button{width:100%;margin-top:9px}.equipment-help{font-size:12px}.inventory-equipment-link{width:100%;margin:5px 0 10px}.equip-inventory-badge{margin-left:auto;color:#e9cb91}
     @media(min-width:580px){.equip-slots{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:390px){.equipment-summary b{font-size:17px}.equip-compare{font-size:11px}}
+    @media(max-width:390px){.equipment-summary b{font-size:17px}.equip-compare{font-size:11px}.bottom button{font-size:10.5px}}
   `;
   document.head.appendChild(style);
 })();
