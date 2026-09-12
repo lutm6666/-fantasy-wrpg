@@ -7,12 +7,27 @@
   ASSET.undead='assets/portrait-placeholder.svg';
   ASSET.items='assets/item-placeholder.svg';
 
+  // Keep the HUD location aligned with the actual scene. Older saves and several
+  // return paths could leave the player shown as being in the cellar after they
+  // had already returned to the tower or Grayharbor.
+  function syncLocation(){
+    const scene=s.scene;
+    let next=null;
+    if(['arrival','guard','notice','tavern','bartender','market','forge','apothecary','oldDocks','epilogue'].includes(scene)) next='灰港';
+    else if(['towerRoad','towerDeep','cellarGate'].includes(scene)) next='舊鐘塔';
+    else if(['cellarCrossroads','cells','ritualHall','dungeonCleared'].includes(scene)) next='鐘塔地窖';
+    else if(['drainEntrance','drainCache'].includes(scene)) next='退潮排水洞';
+    if(next && s.location!==next){s.location=next;return true}
+    return false;
+  }
+
   const previousAct=act;
   act=function(a){
     // Prevent repeatedly collecting the Grayharbor investigation advance.
     if((a==='acceptQuest'||a==='bargain') && s.quests?.missing){
       s.scene='towerRoad';
       log('你已經接下米菈的調查，不會再次領取訂金。');
+      syncLocation();
       save();showScene();return;
     }
 
@@ -23,8 +38,11 @@
       if(!s.quests.missing) ensureQuest();
       s.quests.missing.stage=Math.max(3,s.quests.missing.stage||1);
       s.quests.missing.desc='深入鐘塔地窖，尋找失蹤者與裂眼組織的線索。';
-      save();
     }
+
+    // Some base scene transitions save before updating the semantic location.
+    // Repair it after the action and refresh the HUD/save only when necessary.
+    if(syncLocation()) save();
   };
 
   const previousCombatTurn=combatTurn;
@@ -49,4 +67,7 @@
     }
     previousCombatTurn(type);
   };
+
+  // Repair stale location labels immediately when loading an older save.
+  if(syncLocation()) save();
 })();
