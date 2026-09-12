@@ -7,8 +7,17 @@
     if(!raw)return;
     const data=JSON.parse(raw);
     if(Number(data?.version)>=3 && data?.combat){
+      // Keep an in-memory copy as a fallback. Some Safari storage modes can read an
+      // existing save but reject writes; in that case the v0.2 migrator would still
+      // clear the combat before the later compatibility layers have a chance to run.
+      window.__ashenPreflightCombat=JSON.parse(JSON.stringify(data.combat));
       data.version=2;
-      localStorage.setItem(key,JSON.stringify(data));
+      try{
+        localStorage.setItem(key,JSON.stringify(data));
+        window.__ashenPreflightDowngradeWritten=true;
+      }catch(_e){
+        window.__ashenPreflightDowngradeWritten=false;
+      }
     }
   }catch(_e){}
 })();
