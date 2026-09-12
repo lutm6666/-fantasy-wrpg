@@ -34,11 +34,17 @@
         toast('生命已滿');
         return;
       }
-      // Base combat code searches potion IDs case-sensitively. Normalize vendor potion IDs
-      // (e.g. shopPotion) so purchased healing potions also work in combat and old saves migrate safely.
+      // Base combat code searches potion IDs case-sensitively. Temporarily normalize
+      // vendor IDs (e.g. shopPotion) for the base turn, then restore the canonical ID
+      // so later shop purchases keep stacking into the same inventory entry.
       const potion=s.inventory.find(x=>x.type==='consumable'&&String(x.id).toLowerCase().includes('potion')&&x.qty>0);
       if(potion && !String(potion.id).includes('potion')){
+        const originalId=potion.id;
         potion.id=String(potion.id).replace(/potion/ig,'potion');
+        previousCombatTurn(type);
+        potion.id=originalId;
+        save();
+        return;
       }
     }
     previousCombatTurn(type);
