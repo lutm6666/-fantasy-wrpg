@@ -18,6 +18,11 @@
   if(s.created && races[s.raceId] && classes[s.classId] && !races[s.raceId].allow.includes(s.classId)){
     const oldClass=classes[s.classId].name;
     s.classId='warrior';
+    const starter=s.inventory?.find(x=>x.id==='starter'&&x.type==='weapon');
+    if(starter){
+      starter.name=classes.warrior.weapon;
+      starter.desc='陪你踏入灰港的第一件武器。';
+    }
     normalizeHp();
     log(`舊存檔職業「${oldClass}」不符合目前的${race().name}職業限制，已改為戰士。`);
     save();
