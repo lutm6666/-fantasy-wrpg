@@ -38,33 +38,37 @@
     renderHud();
   };
 
-  const previousResetGame=resetGame;
+  // Always verify that deletion actually succeeded. Storage permissions can change
+  // after the last successful save, so relying on a previous write-failure flag can
+  // still let the legacy reset throw or reload an undeleted save in Safari.
   resetGame=function(){
-    if(!window.__ashenStorageUnavailable){previousResetGame();return}
-    if(confirm('確定要刪除存檔嗎？')){
-      let removed=false;
-      try{
-        localStorage.removeItem('ashen-realms-save');
-        removed=localStorage.getItem('ashen-realms-save')===null;
-      }catch(_e){}
+    if(!confirm('確定要刪除存檔嗎？'))return;
 
-      s=clone(baseState);
-      draftRace='human';
-
-      // Reload only if the persisted save was actually removed. In Safari modes
-      // where storage is readable but delete/write operations are rejected, a
-      // reload would simply load the old character again and make Reset look broken.
-      if(removed){
-        location.reload();
-        return;
-      }
-
-      closeModal();
-      $('#hud')?.classList.add('hidden');
-      $('#nav')?.classList.add('hidden');
-      showCreate();
-      toast('Safari 無法刪除本機存檔；已重置本次遊戲');
+    let removed=false;
+    try{
+      localStorage.removeItem('ashen-realms-save');
+      removed=localStorage.getItem('ashen-realms-save')===null;
+      if(removed) window.__ashenStorageUnavailable=false;
+    }catch(_e){
+      window.__ashenStorageUnavailable=true;
     }
+
+    s=clone(baseState);
+    draftRace='human';
+
+    // Reload only if the persisted save was actually removed. In Safari modes
+    // where storage is readable but delete/write operations are rejected, a
+    // reload would simply load the old character again and make Reset look broken.
+    if(removed){
+      location.reload();
+      return;
+    }
+
+    closeModal();
+    $('#hud')?.classList.add('hidden');
+    $('#nav')?.classList.add('hidden');
+    showCreate();
+    toast('Safari 無法刪除本機存檔；已重置本次遊戲');
   };
 
   // Avoid 404s for scene art that has not been added yet.
