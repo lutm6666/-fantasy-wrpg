@@ -93,6 +93,13 @@
 
   const previousAct=act;
   act=function(a){
+    // Persist the branch choice before the base v0.3 handler completes the quest.
+    // Without this flag, the post-quest dock dialogue can never reflect how the
+    // player handled the smuggling ledger.
+    if(['returnDockLedger','giveGuardLedger','leaveLedger'].includes(a)&&!s.flags?.tideDone){
+      s.flags=s.flags||{};
+      s.flags.tideOutcome=a;
+    }
     if(a==='bartenderPost'){s.scene='bartenderPost';save();showScene();return;}
     previousAct(a);
   };
