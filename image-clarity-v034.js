@@ -1,7 +1,8 @@
 // Ashen Realms v0.3.4 — high-DPI scene image clarity fix.
 (function(){
-  const HD_GRAYHARBOR='assets/grayharbor-hd.svg';
-  const HD_MIRA='assets/mira-hd.svg';
+  // Cache-busted generated artwork. Do not point these back to the old vector placeholders.
+  const HD_GRAYHARBOR='assets/grayharbor-hd.svg?v=20260914b';
+  const HD_MIRA='assets/mira-hd.svg?v=20260914b';
 
   // Replace the tiny legacy JPEG and bypass the 320x180 generated atlas crop.
   if(typeof ASSET!=='undefined') ASSET.harbor=HD_GRAYHARBOR;
@@ -17,7 +18,7 @@
   showScene=function(){
     previousShowScene();
 
-    // The visual atlas only gives Mira an 80x100 crop. Replace it with a scalable portrait.
+    // Replace the tiny legacy Mira crop with the generated portrait.
     if(['guard','thirdDrain'].includes(s.scene)){
       const old=document.querySelector('.npc-scene-portrait');
       if(old){
@@ -47,14 +48,14 @@
     }
     .hd-npc-portrait{
       object-fit:cover;
-      object-position:center 34%;
-      aspect-ratio:1/1;
+      object-position:center 28%;
+      aspect-ratio:4/5;
       image-rendering:auto;
       background:#101722;
     }
   `;
   document.head.appendChild(style);
 
-  // Refresh the current scene immediately so a cached low-resolution atlas image is replaced.
+  // Refresh the current scene immediately so a cached low-resolution or placeholder image is replaced.
   if(typeof s!=='undefined' && s.created) showScene();
 })();
