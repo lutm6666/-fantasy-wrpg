@@ -1,4 +1,4 @@
-// Ashen Realms v0.3.1 — interface close controls and race-specific class lock lore.
+// Ashen Realms v0.3.3 — interface close controls and race-specific class lock lore.
 (function(){
   const lockLore={
     human:{
@@ -71,7 +71,7 @@
 
   // Keep the in-game version label consistent with the page header.
   window.showMenu=function(){
-    openModal(`<h2>系統</h2><p>版本 <b>v0.3.1</b></p><p class="muted">灰港樞紐與介面更新：新增鐵匠與藥師商店、聲望、支線「低潮時的哭聲」、新敵人與三種帳冊處理結果；修正經驗條與消耗品使用，並加入所有彈出介面的關閉按鈕與種族專屬職業限制敘述。</p><div class="choices"><button onclick="save();toast('已儲存')">立即儲存</button><button class="danger" onclick="resetGame()">刪除存檔並重新開始</button></div>`);
+    openModal(`<h2>系統</h2><p>版本 <b>v0.3.3</b></p><p class="muted">灰港樞紐與介面更新：新增鐵匠與藥師商店、聲望、支線「低潮時的哭聲」、新敵人與三種帳冊處理結果；並包含後續的敘事銜接、裝備介面、存檔相容性與行動版修正。</p><div class="choices"><button onclick="save();toast('已儲存')">立即儲存</button><button class="danger" onclick="resetGame()">刪除存檔並重新開始</button></div>`);
   };
 
   const style=document.createElement('style');
