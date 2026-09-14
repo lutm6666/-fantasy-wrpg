@@ -28,6 +28,22 @@
     save();
   }
 
+  // Track whether Mira's initial investigation contract has actually been resolved.
+  // The quest can be created simply by entering the tower before speaking to her;
+  // quest existence alone therefore cannot be used to decide whether the player has
+  // already accepted/bargained for the job.
+  s.flags=s.flags||{};
+  if(typeof s.flags.investigationContractResolved!=='boolean'){
+    const history=Array.isArray(s.log)?s.log:[];
+    const resolvedInHistory=history.some(x=>{
+      const text=String(x);
+      return text.includes('接下任務：鐘塔下的失蹤者')||
+        text.includes('成功讓米菈提高訂金')||
+        text.includes('米菈拒絕討價還價');
+    });
+    s.flags.investigationContractResolved=!!(s.flags.reported||resolvedInHistory);
+  }
+
   // Safari can reject localStorage writes (for example in restricted/private
   // browsing contexts or when storage quota is unavailable). A thrown setItem
   // previously aborted the current action after the state had already changed,
@@ -99,12 +115,16 @@
 
   const previousAct=act;
   act=function(a){
-    // Prevent repeatedly collecting the Grayharbor investigation advance.
-    if((a==='acceptQuest'||a==='bargain') && s.quests?.missing){
+    // Prevent repeatedly resolving Mira's advance/negotiation, but do not confuse
+    // a quest created by self-exploration with a contract that was already accepted.
+    if((a==='acceptQuest'||a==='bargain') && s.flags?.investigationContractResolved){
       s.scene='towerRoad';
-      log('你已經接下米菈的調查，不會再次領取訂金。');
+      log('你已經和米菈談妥這項調查，不會再次結算訂金。');
       syncLocation();
       save();showScene();return;
+    }
+    if(a==='acceptQuest'||a==='bargain'){
+      s.flags.investigationContractResolved=true;
     }
 
     previousAct(a);
