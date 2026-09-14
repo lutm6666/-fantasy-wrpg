@@ -1,8 +1,9 @@
 // Ashen Realms v0.3.4 — high-DPI scene image clarity fix.
 (function(){
-  // Cache-busted generated artwork. Do not point these back to the old vector placeholders.
-  const HD_GRAYHARBOR='assets/grayharbor-hd.svg?v=20260914c';
-  const HD_MIRA='assets/mira-hd.svg?v=20260914c';
+  // Cache-busted generated artwork. Keep these aligned with index.html preloads so
+  // Safari/GitHub Pages cannot reuse an older image while the current script is loaded.
+  const HD_GRAYHARBOR='assets/grayharbor-hd.svg?v=20260914d';
+  const HD_MIRA='assets/mira-hd.svg?v=20260914d';
 
   // Replace the tiny legacy JPEG and bypass the 320x180 generated atlas crop.
   if(typeof ASSET!=='undefined') ASSET.harbor=HD_GRAYHARBOR;
