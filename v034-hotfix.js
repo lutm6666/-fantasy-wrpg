@@ -78,6 +78,14 @@
 
   const previousAct=act;
   act=function(a){
+    // Act II's generic scene-navigation branch catches allenTestimony before its
+    // dedicated quest update can run. Apply the stage change first so the
+    // delegated go('allenTestimony') save persists the correct journal state.
+    if(a==='allenTestimony'&&s.quests?.namelessCorpse){
+      s.quests.namelessCorpse.stage=Math.max(3,s.quests.namelessCorpse.stage||1);
+      s.quests.namelessCorpse.desc='艾倫仍保有完整意識。調查他的狀態與地下經歷。';
+    }
+
     // These two branches need the relationship update before scene rendering/save.
     if(a==='protectAllen'){
       const m=ensureMira();m.trust=clamp((m.trust||0)+1,-3,3);
